@@ -1,7 +1,7 @@
 """
     Tercera tarea de APA - manejo de vectores
 
-    Nombre y apellidos:
+    Nombre y apellidos: Biel Bernal Pratdesaba
 """
 
 class Vector:
@@ -84,4 +84,65 @@ class Vector:
         """
 
         return -self + other
+    
+    def __mul__(self, other):
+        """
+        Multiplica al vector un altre vector o una constant.
+
+        >>> v1 = Vector([1, 2, 3])
+        >>> v2 = Vector([4, 5, 6])
+        >>> v1 * 2
+        Vector([2, 4, 6])
+        >>> v2 * v1
+        Vector([4, 10, 18])
+        """
+        if isinstance(other, Vector):
+            if len(self.vector) !=len(other.vector):
+                raise ValueError("Els vectors han de tenir la mateixa mida")
+            return Vector([a * b for a, b in zip(self.vector, other.vector)])
+        elif isinstance(other, (int, float)):
+            return Vector([a * other for a in self.vector])
+        
+    def __rmul__(self, other):
+        """
+        Mètode reflexat de la multiplicació
+
+        """
+        return self.__mul__(other)
+    
+    def __matmul__(self, other):
+        """
+        Mètode que ens permet fer el producte escalar.
+
+        >>> v1 = Vector([1, 2, 3])
+        >>> v2 = Vector([4, 5, 6])
+        >>> v1 @ v2
+        32
+        """
+        if len(self.vector) != len(other.vector):
+            raise ValueError("Els vectors han de tenir la mateixa mida")
+        return sum(a * b for a, b in zip(self.vector, other.vector))
+
+    def __rmatmul__(self,other):
+        """
+        Mètode reflexat del producte escalar.
+        """
+        return self.__matmul__(other)  
+    
+    def __floordiv__(self, other):
+        """
+        
+        """
+        if len(self) != len(other):
+            raise ValueError("Els vectors han de tenir la mateixa mida.")
+        
+        elif not isinstance(other, Vector):
+            raise TypeError("No se puede proyectar un escalar sobre un vector.")
+        
+        else :
+            producteEscalar = self @ other
+            modul = sum(a**2 for a in other)
+            factor = producteEscalar / modul
+            return Vector([b * factor for b in other])
+        
 
