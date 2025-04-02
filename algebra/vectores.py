@@ -106,7 +106,6 @@ class Vector:
     def __rmul__(self, other):
         """
         Mètode reflexat de la multiplicació
-
         """
         return self.__mul__(other)
     
@@ -131,13 +130,16 @@ class Vector:
     
     def __floordiv__(self, other):
         """
-        
+        >>> v1 = Vector([2, 1, 2])
+        >>> v2 = Vector([0.5, 1, 0.5])
+        >>> v1 // v2
+        Vector([1.0, 2.0, 1.0])
         """
         if len(self) != len(other):
             raise ValueError("Els vectors han de tenir la mateixa mida.")
         
         elif not isinstance(other, Vector):
-            raise TypeError("No se puede proyectar un escalar sobre un vector.")
+            raise TypeError("No es pot projectar un escalar a un vector.")
         
         else :
             producteEscalar = self @ other
@@ -145,4 +147,24 @@ class Vector:
             factor = producteEscalar / modul
             return Vector([b * factor for b in other])
         
+    def __rfloordiv__(self, other):
+        """
+        """
+        return self.__floordiv__(other)
+    
+    def __mod__(self, other):
+        if not isinstance(other, Vector):
+            raise TypeError("Només es pot calcular la component ortogonal respecte d'un altre Vector.")
+                
+        if len(self) != len(other):
+            raise ValueError("Els vectors han de tenir la mateixa mida.")
+        return self - (self // other)
+    
+    def __rmod__(self, other):
+        """
+        """
+        return Vector(other) % self
 
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
