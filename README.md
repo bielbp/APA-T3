@@ -1,6 +1,6 @@
 # Tercera tarea de APA: Multiplicaciones de vectores y ortogonalidad
 
-## Nom i cognoms
+## Biel Bernal Pratdesaba
 
 El fichero `algebra/vectores.py` incluye la definición de la clase `Vector` con los
 métodos desarrollados en clase, que incluyen la construcción, representación y
@@ -76,11 +76,109 @@ Inserte a continuación una captura de pantalla que muestre el resultado de ejec
 fichero `algebra/vectores.py` con la opción *verbosa*, de manera que se muestre el
 resultado de la ejecución de los tests unitarios.
 
+![alt text](image.png)
+
 #### Código desarrollado
 
 Inserte a continuación el código de los métodos desarrollados en esta tarea, usando los
 comandos necesarios para que se realice el realce sintáctico en Python del mismo (no
 vale insertar una imagen o una captura de pantalla, debe hacerse en formato *markdown*).
+
+```python
+def __mul__(self, other):
+        """
+        Multiplica al vector un altre vector o una constant.
+
+        >>> v1 = Vector([1, 2, 3])
+        >>> v2 = Vector([4, 5, 6])
+        >>> v1 * 2
+        Vector([2, 4, 6])
+        >>> v2 * v1
+        Vector([4, 10, 18])
+        """
+        if isinstance(other, Vector):
+            if len(self.vector) !=len(other.vector):
+                raise ValueError("Els vectors han de tenir la mateixa mida")
+            return Vector([a * b for a, b in zip(self.vector, other.vector)])
+        elif isinstance(other, (int, float)):
+            return Vector([a * other for a in self.vector])
+        
+    def __rmul__(self, other):
+        """
+        Mètode reflexat de la multiplicació
+        """
+        return self.__mul__(other)
+    
+    def __matmul__(self, other):
+        """
+        Mètode que ens permet fer el producte escalar.
+
+        >>> v1 = Vector([1, 2, 3])
+        >>> v2 = Vector([4, 5, 6])
+        >>> v1 @ v2
+        32
+        """
+        if len(self.vector) != len(other.vector):
+            raise ValueError("Els vectors han de tenir la mateixa mida")
+        return sum(a * b for a, b in zip(self.vector, other.vector))
+
+    def __rmatmul__(self,other):
+        """
+        Mètode reflexat del producte escalar.
+        """
+        return self.__matmul__(other)  
+    
+    def __floordiv__(self, other):
+        """
+        Retorna la component tangencial del vector
+
+        >>> v1 = Vector([2, 1, 2])
+        >>> v2 = Vector([0.5, 1, 0.5])
+        >>> v1 // v2
+        Vector([1.0, 2.0, 1.0])
+        """
+        if len(self) != len(other):
+            raise ValueError("Els vectors han de tenir la mateixa mida.")
+        
+        elif not isinstance(other, Vector):
+            raise TypeError("No es pot projectar un escalar a un vector.")
+        
+        else :
+            producteEscalar = self @ other
+            modul = sum(a**2 for a in other)
+            factor = producteEscalar / modul
+            return Vector([b * factor for b in other])
+        
+    def __rfloordiv__(self, other):
+        """
+        Mètode reflexat del component tangencial.
+        """
+        return self.__floordiv__(other)
+    
+    def __mod__(self, other):
+        """
+        Mètode que retorna el component normal.
+
+        v1 (componentNormal) = v1 - (v1//v2)
+
+        >>> v1 = Vector([2, 1, 2])
+        >>> v2 = Vector([0.5, 1, 0.5])
+        >>> v1 % v2
+        Vector([1.0, -1.0, 1.0])
+        """
+        if not isinstance(other, Vector):
+            raise TypeError("Només es pot calcular la component ortogonal respecte d'un altre Vector.")
+                
+        if len(self) != len(other):
+            raise ValueError("Els vectors han de tenir la mateixa mida.")
+        return self - (self // other)
+    
+    def __rmod__(self, other):
+        """
+        Mètode reflexat del component normal.
+        """
+        return Vector(other) % self
+```
 
 #### Subida del resultado al repositorio GitHub y *pull-request*
 

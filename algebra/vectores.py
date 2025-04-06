@@ -2,6 +2,26 @@
     Tercera tarea de APA - manejo de vectores
 
     Nombre y apellidos: Biel Bernal Pratdesaba
+
+    >>> v1 = Vector([1, 2, 3])
+    >>> v2 = Vector([4, 5, 6])
+    >>> v1 * 2
+    Vector([2, 4, 6])
+
+    >>> v1 * v2
+    Vector([4, 10, 18])
+
+    >>> v1 @ v2
+    32
+
+    >>> v1 = Vector([2, 1, 2])
+    >>> v2 = Vector([0.5, 1, 0.5])
+    >>> v1 // v2
+    Vector([1.0, 2.0, 1.0])
+
+    >>> v1 % v2
+    Vector([1.0, -1.0, 1.0])
+
 """
 
 class Vector:
@@ -130,6 +150,8 @@ class Vector:
     
     def __floordiv__(self, other):
         """
+        Retorna la component tangencial del vector
+
         >>> v1 = Vector([2, 1, 2])
         >>> v2 = Vector([0.5, 1, 0.5])
         >>> v1 // v2
@@ -149,10 +171,21 @@ class Vector:
         
     def __rfloordiv__(self, other):
         """
+        Mètode reflexat del component tangencial.
         """
         return self.__floordiv__(other)
     
     def __mod__(self, other):
+        """
+        Mètode que retorna el component normal.
+
+        v1 (componentNormal) = v1 - (v1//v2)
+
+        >>> v1 = Vector([2, 1, 2])
+        >>> v2 = Vector([0.5, 1, 0.5])
+        >>> v1 % v2
+        Vector([1.0, -1.0, 1.0])
+        """
         if not isinstance(other, Vector):
             raise TypeError("Només es pot calcular la component ortogonal respecte d'un altre Vector.")
                 
@@ -162,9 +195,10 @@ class Vector:
     
     def __rmod__(self, other):
         """
+        Mètode reflexat del component normal.
         """
         return Vector(other) % self
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()
+    doctest.testmod(verbose = True)
